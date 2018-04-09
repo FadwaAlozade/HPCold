@@ -139,50 +139,6 @@ void forward(int NP, int rang) {
       printf("Last row Sent. Rank = %d\n", rang);
     if (rang!=NP-1)  MPI_Recv(hFil+size_y*(size_x-1), size_y, MPI_DOUBLE, rang+1, TAG_FIRST_ROW, MPI_COMM_WORLD, &status);
       printf("First row Received. Rank = %d\n", rang);
-  f = 0.;
-  if (j > 0)
-    f = UPHY(t - 1, i, j - 1);
-
-  return VFIL(t - 1, i, j) +
-    dt * ((-grav / dy) * (HPHY(t - 1, i, j) - c) -
-          (pcor / 4.) * (d + e + f + UPHY(t - 1, i, j)) -
-          (dissip * VFIL(t - 1, i, j)));
-}
-
-void forward(int NP, int rang) {
-   MPI_Status status;
-    MPI_Request isreq1, isreq2, irreq1, irreq2;
-  int TAG_FIRST_ROW = 0;
-  int TAG_LAST_ROW = 1;
-  FILE *file = NULL;
-  double svdt = 0.;
-  int t = 0;
-  
-  if (rang==0) {
-        if (file_export) {
-            file = create_file();
-            export_step(file, t);
-          }
-  }
-  
-  
-  for (t = 1; t < nb_steps; t++) {
-    /* Récupération et envoi des lignes à la frontière avec les proc voisins */
-    // if (rang!=0)     MPI_Isend(hFil+size_y, size_y, MPI_DOUBLE, rang-1, TAG_FIRST_ROW, MPI_COMM_WORLD, &isreq1);
-    // printf("First row Sent. Rank = %d\n", rang);
-    // if (rang!=NP-1)  MPI_Isend(hFil+size_y*(size_x-2), size_y, MPI_DOUBLE, rang+1, TAG_LAST_ROW, MPI_COMM_WORLD, &isreq2);
-    //   printf("Last row Sent. Rank = %d\n", rang);
-    // if (rang!=NP-1)  MPI_Irecv(hFil+size_y*(size_x-1), size_y, MPI_DOUBLE, rang+1, TAG_FIRST_ROW, MPI_COMM_WORLD, &irreq1);
-    //   printf("First row Received. Rank = %d\n", rang);
-    // if (rang!=0)     MPI_Irecv(hFil, size_y, MPI_DOUBLE, rang-1, TAG_LAST_ROW, MPI_COMM_WORLD, &irreq2);
-    // printf("Last row Received. Rank = %d\n", rang);
-    printf("");
-    if (rang!=0)     MPI_Send(hFil+size_y, size_y, MPI_DOUBLE, rang-1, TAG_FIRST_ROW, MPI_COMM_WORLD);
-    printf("First row Sent. Rank = %d\n", rang);
-    if (rang!=NP-1)  MPI_Send(hFil+size_y*(size_x-2), size_y, MPI_DOUBLE, rang+1, TAG_LAST_ROW, MPI_COMM_WORLD);
-      printf("Last row Sent. Rank = %d\n", rang);
-    if (rang!=NP-1)  MPI_Recv(hFil+size_y*(size_x-1), size_y, MPI_DOUBLE, rang+1, TAG_FIRST_ROW, MPI_COMM_WORLD, &status);
-      printf("First row Received. Rank = %d\n", rang);
     if (rang!=0)     MPI_Recv(hFil, size_y, MPI_DOUBLE, rang-1, TAG_LAST_ROW, MPI_COMM_WORLD, &status);
     printf("Last row Received. Rank = %d\n", rang);
 
